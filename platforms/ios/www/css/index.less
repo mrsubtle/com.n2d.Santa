@@ -1,0 +1,82 @@
+/*
+ * index.less
+ */
+
+
+// VARIABLES ================================
+  @appBG1 : #f0f0f0;
+  @appBG : #fff;
+  @mainColor : rgb(73,72,73);
+  @tintColor : rgb(74,144,226);
+  @touchBase : 50px;
+  @tintColorDark : darken(@tintColor,20%);
+  @tintColorLight : lighten(@tintColor,20%);
+  @timingFunction : ease-in-out;
+
+// UI ELEMENTS ==============================
+  button.action {
+    display: block;
+    width: 100%;
+    height: @touchBase;
+    min-height: @touchBase;
+    line-height: 0.05;
+    text-align: center;
+    padding: @touchBase / 2;
+    border: none;
+    border-bottom: (@touchBase / @touchBase) solid @tintColorLight;
+    background: @tintColor;
+    font-family: "HelveticaNeue-Medium";
+    font-size: 15px;
+    color: lighten(@tintColorLight,30%);
+  }
+  button.action:last-child {
+    border-bottom: none;
+  }
+
+  // TOUCH HANDLING ===========================
+  .touchable {
+    -webkit-transition: all 300ms @timingFunction;
+  }
+  .touched {
+    opacity: 0.3;
+  }
+
+// LAYOUT ===================================
+  * {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%; height: 100%;
+  }
+
+  body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    background-color: @appBG;
+    background-image:linear-gradient(top, @appBG1 0%, @appBG 51%);
+    background-image:-webkit-linear-gradient(top, @appBG1 0%, @appBG 51%);
+    background-image:-ms-linear-gradient(top, @appBG1 0%, @appBG 51%);
+    background-image:-webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, @appBG1),
+      color-stop(0.51, @appBG)
+    );
+    background-attachment:fixed;
+    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+    font-size:12px;
+    width:100%; height:100%;
+    margin:0px; padding:0px;
+    color: @mainColor;
+  }
+
+
+.app {
+
+
+
+}
