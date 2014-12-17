@@ -21,6 +21,8 @@
   @fontFamilyM : "HelveticaNeue-Medium","Roboto-Medium";
   @fontFamilyL : "HelveticaNeue-Light","Roboto-Light";
   @fontFamily : "HelveticaNeue","Roboto";
+  @fontFamilySerif : "Times New Roman", "Times";
+  @borderStandard : (@touchBase / @touchBase) solid;
 
 // UI ELEMENTS ==============================
   button {
@@ -32,26 +34,72 @@
     text-align: center;
     padding: @touchBase / 2;
     border: none;
-    border-bottom: (@touchBase / @touchBase) solid @mainColorLight;
+    border-bottom: @borderStandard @mainColorLight;
     background: @mainColorMedium;
     font-family: @fontFamilyM;
     font-size: 15px;
     color: lighten(@mainColorLight,30%);
   }
   button.action {
-    border-bottom: (@touchBase / @touchBase) solid @tintColorLight;
+    border-bottom: @borderStandard @tintColorLight;
     background: @tintColor;
     color: lighten(@tintColorLight,30%);
   }
   button.cancel {
     font-family: @fontFamilyB;
-    border-bottom: (@touchBase / @touchBase) solid @cancelColorLight;
+    border-bottom: @borderStandard @tintColorLight;
     background: @cancelColor;
     text-transform: uppercase;
     color: lighten(@cancelColorLight,30%);
   }
   button:last-child {
     border-bottom: none;
+  }
+
+  // media
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  // text labels
+  .centeredText {
+    font-family: @fontFamilySerif;
+    font-style: italic;
+    font-size: 15px;
+    text-align: center;
+    padding: 1em 3.5em;
+  }
+
+  // form elements
+  fieldset {
+    display: block;
+    position: relative;
+    border: none;
+    margin: 0; padding: 0;
+    input:last-child {
+      border-bottom: none;
+    }
+    input.topBorder {
+      border-top: @borderStandard darken(@appBG1,10%);
+    }
+  }
+  input {
+    -webkit-appearance: none;
+    display: block;
+    font-family: @fontFamilyM;
+    font-size: 15px;
+    color: @mainColor;
+    text-align: center;
+    width: 100%;
+    border: none; outline: none;
+    border-radius: 0;
+    border-bottom: @borderStandard darken(@appBG1,10%);
+    margin: 0;
+    padding: 1em 3.5em;
+  }
+  input:focus {
+    background-color: @appBG;
   }
 
 // TOUCH HANDLING ===========================
@@ -65,6 +113,32 @@
 // MAIN CLASSES =============================
   .hidden {
     display: none !important;
+  }
+  .clear {
+    opacity: 0;
+  }
+  .centered {
+    text-align: center;
+  }
+  .marginBig {
+    margin: 20%;
+  }
+  .marginSmall {
+    margin: 5%;
+  }
+  .paddingBig {
+    padding: 20%;
+  }
+  .paddingSmall {
+    padding: 5%;
+  }
+
+// ANIMATION CLASSES ========================
+  .animate300 {
+    -webkit-transition: all 300ms @timingFunction;
+  }
+  .animate500 {
+    -webkit-transition: all 500ms @timingFunction;
   }
 
 // LAYOUT ===================================
@@ -93,8 +167,8 @@
       color-stop(0.51, @appBG)
     );
     background-attachment:fixed;
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
+    font-family: @fontFamily;
+    font-size: 15px;
     width:100%; height:100%;
     margin:0px; padding:0px;
     color: @mainColor;
@@ -113,4 +187,17 @@
     top: 0px; left: 0px;
     width: 100%; height: 100%;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .topGroup {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+  }
+  .bottomGroup {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
   }

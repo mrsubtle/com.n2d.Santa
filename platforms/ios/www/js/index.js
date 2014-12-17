@@ -31,11 +31,25 @@ var app = {
 
 
     //begin rendering the app
-    app.render();
+    app.showScreen($('section.screen#login'),1);
   },
-  render: function(){
+  showScreen: function(s,animateBoolean){
+    //hide all the other screens
+    $('section.screen:not(.hidden)').each(function(){
+      $(this).addClass('animate300').addClass('clear');
+      $(this).one('webkitTransitionEnd',function(){
+        $(this).addClass('hidden');
+        $(this).removeClass('animate300').removeClass('clear');
+      });
+    });
     //ready to show the screen
-    $('section.screen#start').removeClass('hidden');
+    s.addClass('clear').removeClass('hidden').addClass('animate300');
+    setTimeout(function(){
+      s.removeClass('clear');
+    },10);
+    s.one('webkitTransitionEnd',function(){
+      s.removeClass('animate300');
+    });
   },
   s: function(message,type){
     //function to log to console and message session queue.

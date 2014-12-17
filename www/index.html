@@ -11,15 +11,44 @@
     </head>
     <body>
         <div class="app">
+          <section id="login" class="screen hidden">
+            <div class="topGroup">
+              <div class="centered">
+                <img src="img/santa580x480.svg" class="paddingBig" alt="">
+              </div>
+              <div class="centeredText">
+                welcome back, little elf!
+              </div>
+              <fieldset>
+                <input type="email" placeholder="username" class="topBorder">
+                <input type="password" placeholder="password" class="">
+              </fieldset>
+              <button class="touchable action">Sign in</button>
+            </div>
+            <div class="bottomGroup">
+              <div class="centeredText">
+                ho there, new user!
+              </div>
+              <button class="touchable">Create an account</button>
+            </div>
+          </section>
+          <section id="signup" class="screen hidden">
+            <p>Signup</p>
+            <button class="touchable">Add to Wish List</button>
+            <button class="touchable action">Create an Event</button>
+            <button class="touchable cancel">Cancel</button>
+          </section>
           <section id="start" class="screen hidden">
             <button class="touchable">Add to Wish List</button>
             <button class="touchable action">Create an Event</button>
             <button class="touchable cancel">Cancel</button>
           </section>
           <section id="events" class="screen hidden">
+            <p>Events</p>
             <button class="touchable">Back</button>
           </section>
           <section id="items" class="screen hidden">
+            <p>Wish List</p>
             <button class="touchable">Back</button>
           </section>
         </div>
