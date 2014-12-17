@@ -11,14 +11,23 @@
     </head>
     <body>
         <div class="app">
-          <section id="start" class="screen">
-            <button class="touchable action">Add to Wish List</button>
+          <section id="start" class="screen hidden">
+            <button class="touchable">Add to Wish List</button>
             <button class="touchable action">Create an Event</button>
+            <button class="touchable cancel">Cancel</button>
+          </section>
+          <section id="events" class="screen hidden">
+            <button class="touchable">Back</button>
+          </section>
+          <section id="items" class="screen hidden">
+            <button class="touchable">Back</button>
           </section>
         </div>
         <!-- Cordova JS -->
         <script type="text/javascript" src="cordova.js"></script>
         <!-- Additional libraries -->
+        <script src="js/lib/underscore-min.js"></script>
+        <script src="js/lib/backbone-min.js"></script>
         <script src="js/lib/jquery-2.1.1.min.js"></script>
         <script src="js/lib/hammer.min.js"></script>
         <script src="js/lib/jquery.hammer.js"></script>
