@@ -12,24 +12,33 @@
     <body>
         <div class="app">
           <section id="login" class="screen hidden">
-            <div class="topGroup">
-              <div class="centered">
-                <img src="img/santa580x480.svg" class="paddingBig" alt="">
+            <div class="flex-container">
+              <div class="flex-item-top">
+                <div class="centered" id="santaLogo">
+                  <img src="img/santa580x480.svg" class="paddingSmall shrinkTo50" alt="">
+                </div>
               </div>
-              <div class="centeredText">
-                welcome back, little elf!
+              <div class="flex-item-middle">
+                <div class="centeredText">
+                  &nbsp;
+                </div>
               </div>
-              <fieldset>
-                <input type="email" placeholder="username" class="topBorder">
-                <input type="password" placeholder="password" class="">
-              </fieldset>
-              <button class="touchable action">Sign in</button>
-            </div>
-            <div class="bottomGroup">
-              <div class="centeredText">
-                ho there, new user!
+              <div class="flex-item-middle">
+                <div class="centeredText">
+                  welcome back, little elf
+                </div>
+                <fieldset>
+                  <input type="email" placeholder="username" class="topBorder">
+                  <input type="password" placeholder="password" class="">
+                </fieldset>
+                <button class="touchable action">Sign in</button>
               </div>
-              <button class="touchable">Create an account</button>
+              <div class="flex-item-bottom">
+                  <div class="centeredText">
+                    ho there, new user
+                  </div>
+                  <button class="touchable">Create an account</button>
+              </div>
             </div>
           </section>
           <section id="signup" class="screen hidden">
@@ -60,7 +69,14 @@
         <script src="js/lib/jquery-2.1.1.min.js"></script>
         <script src="js/lib/hammer.min.js"></script>
         <script src="js/lib/jquery.hammer.js"></script>
-        <script src="https://www.parsecdn.com/js/parse-1.3.2.min.js"></script>
+        <script src="js/lib/parse-1.3.2.min.js"></script>
+        <!-- Add & Configure GSS -->
+        <script>
+          GSS_CONFIG = {
+            worker: "js/lib/gss/dist/worker.js"
+          }
+        </script>
+        <script src="js/lib/gss/dist/gss.js"></script>
         <!-- Custom JS -->
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
