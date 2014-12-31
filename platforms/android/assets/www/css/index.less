@@ -22,6 +22,9 @@
   @fontFamilyL : "HelveticaNeue-Light","Roboto-Light";
   @fontFamily : "HelveticaNeue","Roboto";
   @fontFamilySerif : "Times New Roman", "Times";
+  @fontFamilyHeader : "ArquitectaBold";
+  @fontFamilyHeaderB : "ArquitectaBlack";
+  @fontFamilyHeaderL : "ArquitectaLight";
   @borderStandard : (@touchBase / @touchBase) solid;
 
 // UI ELEMENTS ==============================
@@ -36,17 +39,23 @@
     border: none;
     border-bottom: @borderStandard @mainColorLight;
     background: @mainColorMedium;
-    font-family: @fontFamilyM;
-    font-size: 15px;
+    //font-family: @fontFamilyM;
+    //font-size: 15px;
+    font-family: @fontFamilyHeader;
+    font-size: 21px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
     color: lighten(@mainColorLight,30%);
   }
   button.action {
+    font-family: @fontFamilyHeaderB;
+    text-transform: uppercase;
     border-bottom: @borderStandard @tintColorLight;
     background: @tintColor;
     color: lighten(@tintColorLight,30%);
   }
   button.cancel {
-    font-family: @fontFamilyB;
+    font-family: @fontFamilyHeaderB;
     border-bottom: @borderStandard @tintColorLight;
     background: @cancelColor;
     text-transform: uppercase;
@@ -58,8 +67,7 @@
 
   // media
   img {
-    max-width: 100%;
-    height: auto;
+    //min-height: 100%;
   }
   img.shrinkTo50 {
     max-width: 50% !important;
@@ -90,8 +98,11 @@
   input {
     -webkit-appearance: none;
     display: block;
-    font-family: @fontFamilyM;
-    font-size: 15px;
+    //font-family: @fontFamilyM;
+    //font-size: 15px;
+    font-family: @fontFamilyHeader;
+    font-size: 23px;
+    letter-spacing: 0.05em;
     color: @mainColor;
     text-align: center;
     width: 100%;
@@ -99,7 +110,7 @@
     border-radius: 0;
     border-bottom: @borderStandard darken(@appBG1,10%);
     margin: 0;
-    padding: 1em 3.5em;
+    padding: 0.5em 0em;
   }
   input:focus {
     background-color: @appBG;
@@ -144,11 +155,43 @@
     -webkit-transition: all 500ms @timingFunction;
   }
 
+  // wiggle/shake
+  @-webkit-keyframes shaker {
+    0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+    10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+    30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+    40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+    50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+    70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+    80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+    90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+    100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+  }
+  /*.shake:hover,
+  .shake:focus {
+    -webkit-animation-name: shaker;
+    -webkit-animation-duration: 0.8s;
+    -webkit-transform-origin:50% 50%;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }*/
+  .shake {
+    display:inline-block;
+    -webkit-animation-name: shaker;
+    -webkit-animation-duration: 0.8s;
+    -webkit-transform-origin:50% 50%;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
+
 // LAYOUT ===================================
   * {
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
     -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
+    outline: none;
   }
 
   html {
@@ -199,27 +242,35 @@
     display: -webkit-flex;
     -webkit-flex-direction: column-reverse;
     -webkit-flex-wrap: nowrap;
-    -webkit-justify-content: center;
+    -webkit-justify-content: space-between;
     -webkit-align-content: stretch;
     -webkit-align-items: center;
   }
 
   .flex-item-top {
     -webkit-order: 3;
-    -webkit-flex: 0 1 auto;
+    -webkit-flex: 0 0 auto;
     -webkit-align-self: stretch;
   }
 
   .flex-item-middle {
     -webkit-order: 2;
-    -webkit-flex: 0 1 auto;
+    -webkit-flex: 0 0 auto;
     -webkit-align-self: stretch;
   }
 
   .flex-item-bottom {
     -webkit-order: 1;
-    -webkit-flex: 0 1 auto;
+    -webkit-flex: 0 0 auto;
     -webkit-align-self: stretch;
+  }
+  .aligner {
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+  }
+  .aligner-item-centered {
+    -webkit-align-self: center;
   }
 
   .topGroup {
@@ -233,4 +284,60 @@
     bottom: 0px;
     left: 0px;
     width: 100%;
+  }
+
+
+// SCREENS =======================
+  .screen#login {
+    #startScreenLogo {
+      position: relative;
+      text-align: center;
+      //height: 1px;
+      img {
+        margin-top: 2em;
+        width: 75%;
+        height: auto;
+      }
+      .layer1, .layer2, .layer3 {
+        position: absolute;
+        top: 0px;
+      }
+    }
+  }
+
+  .screen#start {
+    ul {
+      //reset the ul
+      margin: 0; padding: 0;
+      list-style: none;
+      li {
+        position: relative;
+        display: block;
+        min-height: @touchBase;
+        font-family: @fontFamilyHeader;
+        font-size: 1.25em;
+        label.main {
+          display: block;
+          padding: 0.75rem 2rem 0rem 1.25rem;
+          font-family: @fontFamilyHeader;
+          font-size: 1.25em;
+        }
+        label.sub {
+          display: block;
+          padding: 0rem 2rem 0.75rem 1.25rem;
+          font-family: @fontFamilyHeaderL;
+          font-size: 0.9em;
+        }
+        label.count {
+          position: absolute;
+          top: 0px; right: 0px;
+          margin: 0.25rem;
+          padding: 0.75rem 1rem 0.75rem 1rem;
+          font-family: @fontFamilyHeaderB;
+          font-size: 0.9em;
+          line-height: 1.25em;
+          vertical-align: baseline;
+        }
+      }
+    }
   }
