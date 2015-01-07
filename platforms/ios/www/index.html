@@ -9,21 +9,33 @@
         <!-- WEBFONTS -->
           <!-- Arquitecta -->
           <link rel="stylesheet" type="text/css" href="fonts/arquitecta.css" />
+          <!-- Santa glyphs -->
+          <link rel="stylesheet" type="text/css" href="css/santa-embedded.css" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <title>Shh Santa!</title>
     </head>
     <body>
+        <section class="actionSheetContainer hidden">
+          <article id="appManager" class="actionSheet">
+            <ul class="upper">
+              <li>Log out</li>
+            </ul>
+            <ul class="lower">
+              <li class="cancel">Cancel</li>
+            </ul>
+          </article>
+        </section>
         <div class="app">
           <nav id="top" class="navBar hidden">
             <div class="left">
-              <i id="disclosure">
-                <img src="img/ico/ico_nav_menu-512.svg">
-              </i>
+              <i id="disclosure" class="hidden clear touchable"><img src="img/ico/ico_nav_menu-512.svg"></i>
+              <i id="back" class="hidden clear touchable"><img src="img/ico/ico_nav_back-512.svg"></i>
+              <i id="add" class="hidden clear touchable"><img src="img/ico/ico_nav_add-512.svg"></i>
             </div>
-            <div class="right">Santa List</div>
+            <div class="right">Shh Santa!</div>
           </nav>
           <section id="login" class="screen hidden">
-            <div class="flex-container">
+            <div class="flex-v-container">
               <div class="flex-item-top">
                 <div id="startScreenLogo">
                   <img src="img/santa-base-580x480.svg" width="580" height="480" alt="">
@@ -34,14 +46,17 @@
               </div>
               <div class="flex-item-middle">
                 <div class="centeredText">
-                  welcome back, little elf
+                  welcome back, little Elf
                 </div>
                 <form id="frm_Login">
                   <fieldset>
-                    <input type="email" placeholder="username" class="topBorder">
-                    <input type="password" placeholder="password" class="">
+                    <input id="txt_username" type="text" placeholder="Elf name" class="topBorder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required>
+                    <input id="txt_password" type="password" placeholder="Password" class="" required>
                   </fieldset>
                   <button type="submit" class="touchable action">Sign in</button>
+                  <div id="lbl_loginError" class="redColor centeredText clear">
+                    error placeholder
+                  </div>
                 </form>
               </div>
               <div class="flex-item-bottom">
@@ -51,27 +66,63 @@
                 <div class="centeredText">
                   ho there, new user
                 </div>
-                <button class="touchable">Create an account</button>
+                <button id="btn_signup" data-screen="signup" class="touchable">Create an account</button>
               </div>
             </div>
           </section>
           <section id="signup" class="screen hidden">
-            <p>Signup</p>
-            <button class="touchable">Add to Wish List</button>
-            <button class="touchable action">Create an Event</button>
-            <button class="touchable cancel">Cancel</button>
+            <form id="frm_signup">
+              <div class="centeredText">
+                &nbsp;
+              </div>
+              <fieldset>
+                <div class="centeredText">
+                  oh hai! what's your Human name?
+                </div>
+                <input id="txt_firstName" type="text" placeholder="First name" class="topBorder">
+                <input id="txt_lastName" type="text" placeholder="Last name" class="">
+                <div class="centeredText">
+                  what's your Elf name?
+                </div>
+                <input id="txt_username" type="text" placeholder="Elf name" class="topBorder">
+                <div class="centeredText">
+                  &nbsp;
+                </div>
+                <div class="centeredText">
+                  what's your email?
+                </div>
+                <input id="txt_email" type="email" placeholder="email@server.net" class="topBorder">
+                <div class="centeredText">
+                  &nbsp;
+                </div>
+                <div class="centeredText">
+                  enter and confirm a password
+                </div>
+                <input id="txt_password" type="password" placeholder="Password" class="topBorder">
+                <input id="txt_passwordConfirm" type="password" placeholder="Confirm password" class="">
+                <button id="btn_submit-signup" type="submit" class="touchable action" disabled="disabled">Create your account</button>
+                <div id="lbl_signupError" class="redColor centeredText clear">
+                  &nbsp;
+                </div>
+              </fieldset>
+              <button id="btn_cancel" class="touchable cancel">Cancel</button>
+            </form>
           </section>
-          <section id="start" class="screen hidden" data-nav="true" data-tabBar="true">
+          <section id="start" class="screen hidden" data-title="Santa List" data-nav="true" data-nav-icon="disclosure" data-tabbar="true">
             <ul id="santaList">
               <!-- //SANTA LIST POPULATED HERE// -->
             </ul>
-            <button class="touchable">Host an Event</button>
+            <button class="touchable">Join an Event</button>
+            <button class="action touchable">Create an Event</button>
           </section>
-          <section id="wishList" class="screen hidden">
+          <section id="personWishList" class="screen hidden" data-title="Wish List" data-nav="true" data-nav-icon="back" data-tabbar="true">
+            something
+          </section>
+          <section id="wishList" class="screen hidden" data-title="Your Wish List" data-nav="true" data-nav-icon="add" data-tabbar="true">
             <p>My WishList</p>
             <button class="touchable">Back</button>
           </section>
-          <section id="events" class="screen hidden">
+          <section id="events" class="screen hidden" data-title="Event List" data-nav="true" data-nav-icon="add" data-tabbar="true">
             <p>Events</p>
             <button class="touchable">Back</button>
           </section>
@@ -79,10 +130,43 @@
             <p>Wish List</p>
             <button class="touchable">Back</button>
           </section>
+          <section id="settings" class="screen hidden" data-title="Settings" data-nav="true" data-tabbar="true">
+            <div class="centeredText">
+              &nbsp;
+            </div>
+            <div class="centeredText">
+              tired of our shennanigans?
+            </div>
+            <button id="btn_logout" class="touchable">Log out</button>
+          </section>
           <nav id="tab" class="tabBar hidden">
-           <div class="tabItem">
-             <i></i>
-             <label></label>
+           <div class="item touchable" data-screen="start">
+             <i>
+               <img src="img/ico/ico_tab_santa-512.svg" class="off hidden">
+               <img src="img/ico/ico_tab_santa-on-512.svg" class="on hidden">
+             </i>
+             <label>Santa List</label>
+           </div>
+           <div class="item touchable" data-screen="wishList">
+             <i>
+               <img src="img/ico/ico_tab_gift-512.svg" class="off hidden">
+               <img src="img/ico/ico_tab_gift-on-512.svg" class="on hidden">
+             </i>
+             <label>Wish List</label>
+           </div>
+           <div class="item touchable" data-screen="events">
+             <i>
+               <img src="img/ico/ico_tab_calendar-512.svg" class="off hidden">
+               <img src="img/ico/ico_tab_calendar-on-512.svg" class="on hidden">
+             </i>
+             <label>Events</label>
+           </div>
+           <div class="item touchable" data-screen="settings">
+             <i>
+               <img src="img/ico/ico_tab_snowflake-512.svg" class="off hidden">
+               <img src="img/ico/ico_tab_snowflake-on-512.svg" class="on hidden">
+             </i>
+             <label>Settings</label>
            </div>
           </nav>
         </div>
@@ -97,15 +181,14 @@
         <!-- http://barcode-coder.com/en/barcode-jquery-plugin-201.html -->
         <script src="js/lib/jquery-barcode.min.js"></script>
         <script src="js/lib/parse-1.3.2.min.js"></script>
-        <script src="js/lib/oridomi.min.js"></script>
         <script src="js/lib/moment.min.js"></script>
-        <!-- Add & Configure GSS -->
+        <!-- Add & Configure GSS
         <script>
           GSS_CONFIG = {
             worker: "js/lib/gss/dist/worker.js"
           }
         </script>
-        <script src="js/lib/gss/dist/gss.js"></script>
+        <script src="js/lib/gss/dist/gss.js"></script> -->
         <!-- Custom JS -->
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
@@ -117,12 +200,23 @@
 
         <!-- underscore.js DOM templates -->
         <script type="text/template" id="tpl_start_listItem">
-          <li class="<% if((isDoneShopping == true) && (isDoneWrapping == true)){print('done ');}%>">
-            <!--<i class="bg" style="background-image:url('<%= recipientPicture.m %>');"></i>-->
-            <i class="avatar" style="background-image:url('<%= recipientPicture.m %>');"></i>
-            <label class="main"><%= recipientDisplayName %></label>
-            <label class="sub"><%= eventTitle %></label>
-            <label class="count"><%= moment(eventAt).fromNow() %></label>
+          <li
+            id="<%= objectId %>"
+            class="<% if((isDoneShopping == true) && (isDoneWrapping == false)){print('shoppingDone ');} else if((isDoneShopping == false) && (isDoneWrapping == true)){print('wrappingDone ');} else if((isDoneShopping == true) && (isDoneWrapping == true)){print('allDone ');} %>"
+            >
+            <div
+              id="<%= objectId %>"
+              class="front touchable"
+              >
+              <!--<i class="bg" style="background-image:url('<%= recipientPicture.m %>');"></i>-->
+              <i class="avatar" style="background-image:url('<%= recipientPicture.m %>');"></i>
+              <label class="main"><%= recipientDisplayName %></label>
+              <label class="sub"><%= eventTitle %></label>
+              <label class="count"><%= moment(eventAt).fromNow() %></label>
+            </div>
+            <div class="back clear">
+              stuff
+            </div>
           </li>
         </script>
     </body>
