@@ -33,7 +33,23 @@
     <gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance" overwrite="true">
       <false/>
     </gap:config-file>
-    
+    <feature name="Notification">
+      <param name="ios-package" value="CDVNotification" />
+    </feature>
+    <feature name="Camera">
+      <param name="ios-package" value="CDVCamera" />
+    </feature>
+    <!-- Android -->
+    <feature name="Notification">
+      <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+    </feature>
+    <feature name="Vibration">
+      <param name="android-package" value="org.apache.cordova.vibration.Vibration" />
+    </feature>
+    <feature name="Camera">
+      <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
+    </feature>
+
     <gap:plugin name="org.apache.cordova.battery-status" />
     <gap:plugin name="org.apache.cordova.camera" />
     <gap:plugin name="org.apache.cordova.media-capture" />

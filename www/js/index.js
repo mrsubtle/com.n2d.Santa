@@ -1,6 +1,165 @@
 /*
  * index.js
  */
+var modals = {
+  mdl_item_create : {
+    el : "#mdl_item_create",
+    hide : function(){
+      this.remE();
+      $('group.modalContainer').one('webkittransitionend transitionend',function(){
+        $(modals.mdl_item_create.el).addClass('hidden');
+        setTimeout(function(){
+          //reset the modal
+          $('#frm_item_create')[0].reset();
+          $(modals.mdl_item_create.el + ' #item_create_photoContainer').html('');
+          $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').addClass('hidden');
+        },1);
+      });
+      $('group.modalContainer').addClass('modalOff');
+      $('.app').toggleClass('tilt');
+    },
+    show : function(){
+      $('.app').toggleClass('tilt');
+      modals.mdl_item_create.remE();
+      modals.mdl_item_create.addE();
+      modals.mdl_item_create.render();
+    },
+    addE : function() {
+      $(modals.mdl_item_create.el + ' #frm_item_create').on('submit',function(e){
+        e.preventDefault();
+      });
+      $(modals.mdl_item_create.el + ' #btn_cancel').hammer().on('tap',function(e){
+        modals.mdl_item_create.hide();
+        e.preventDefault();
+      });
+      $(modals.mdl_item_create.el + ' #btn_save').hammer().on('tap',function(e){
+        modals.mdl_item_create.setData();
+        e.preventDefault();
+      });
+      $(modals.mdl_item_create.el + ' #btn_scanBarcode').hammer().on('tap',function(e){
+        var lblO = $(modals.mdl_item_create.el + ' #frm_item_create #lbl_barcodeStatus');
+        var tmpLbl = lblO.html();
+        lblO.html( $('#tpl_loading').html() );
+        //scan that code!
+        cordova.plugins.barcodeScanner.scan(
+          function (result) {
+            if(result.cancelled == 0){
+              lblO.html('...successful scan...');
+              $('#frm_item_create #txt_upc').val(result.text);
+
+            } else {
+              lblO.html(tmpLbl);
+            }
+            //DEBUG
+            console.log(result);
+          },
+          function (error) {
+            lblO.html(tmpLbl);
+            app.e("Oops! Scan seems to have failed, but don't worry - we'll fix it. Eventiually.");
+            //DEBUG
+            console.log(error);
+          }
+        );
+        e.preventDefault();
+      });
+      $(modals.mdl_item_create.el + ' #btn_takeItemPhoto').hammer().on('tap',function(e){
+        navigator.camera.getPicture(function(imgData){
+          //success!
+          var v = {
+            uri : "data:image/png;base64," + imgData
+          };
+          var tpl = _.template( $('#tpl_item_create_photo').html() );
+          $(modals.mdl_item_create.el + ' #item_create_photoContainer').html(tpl(v));
+          $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').removeClass("hidden");
+        }, function(error){
+          //fail :(
+          app.e('Can\'t take a picture.  I don\'t know why.  Do you?');
+        }, {
+          quality: 80,
+          destinationType: Camera.DestinationType.DATA_URL,
+          sourceType: Camera.PictureSourceType.CAMERA,
+          allowEdit: true,
+          targetWidth: 1024,
+          targetHeight: 1024,
+          encodingType: Camera.EncodingType.PNG,
+          cameraDirection: Camera.Direction.BACK
+        });
+        e.preventDefault();
+      });
+      $(modals.mdl_item_create.el + ' #btn_selectItemPhoto').hammer().on('tap',function(e){
+        navigator.camera.getPicture(function(imgData){
+          //success!
+          var v = {
+            uri : "data:image/png;base64," + imgData
+          };
+          var tpl = _.template( $('#tpl_item_create_photo').html() );
+          $(modals.mdl_item_create.el + ' #item_create_photoContainer').html(tpl(v));
+          $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').removeClass('hidden');
+        }, function(error){
+          //fail :(
+          app.e("Umm... This is embarassing. I can't open the gallery.  I don't know why.  Do you?");
+        }, {
+          quality: 80,
+          destinationType: Camera.DestinationType.DATA_URL,
+          sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+          allowEdit: true,
+          targetWidth: 1024,
+          targetHeight: 1024,
+          encodingType: Camera.EncodingType.PNG
+        });
+        e.preventDefault();
+      });
+      $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').hammer().on('tap',function(e){
+        $(modals.mdl_item_create.el + ' #item_create_photoContainer').html('');
+        $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').addClass('hidden');
+        e.preventDefault();
+      });
+    },
+    remE : function() {
+      $(modals.mdl_item_create.el + ' #frm_item_create').off('submit');
+      $(modals.mdl_item_create.el + ' #btn_cancel').hammer().off('tap');
+      $(modals.mdl_item_create.el + ' #btn_save').hammer().off('tap');
+      $(modals.mdl_item_create.el + ' #btn_scanBarcode').hammer().off('tap');
+      $(modals.mdl_item_create.el + ' #btn_takeItemPhoto').hammer().off('tap');
+      $(modals.mdl_item_create.el + ' #btn_selectItemPhoto').hammer().off('tap');
+      $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').hammer().off('tap');
+    },
+    render : function(){
+      //unhide the appropriate modal
+      $(modals.mdl_item_create.el).removeClass('hidden');
+      //animate modal container
+      $('group.modalContainer').removeClass('modalOff');
+    },
+    setData : function(){
+      var Item = Parse.Object.extend("Item");
+      var newItem = new Item();
+      newItem.set('owner',Parse.User.current());
+      newItem.set('name',$(modals.mdl_item_create.el+" #txt_name").val());
+      newItem.set('description',$(modals.mdl_item_create.el+" #txt_description").val());
+      newItem.set('upc',parseInt($(modals.mdl_item_create.el+" #txt_upc").val()));
+      newItem.set('rating',parseInt($(modals.mdl_item_create.el+" #txt_rating").val()));
+      newItem.set('lastSeenAt',$(modals.mdl_item_create.el+" #txt_lastSeenAt").val());
+      newItem.set('estPrice',parseInt($(modals.mdl_item_create.el+" #txt_estPrice").val()));
+      if($('#mdl_item_create #item_create_photoContainer img').length != 0){
+        var t = $('#mdl_item_create #item_create_photoContainer img').attr('src');
+        var base64data = t.slice("data:image/png;base64,".length);
+        var image = new Parse.File('item.png',{ base64 : base64data });
+        newItem.set('photo', image);
+      }
+      newItem.save(null,{
+        success : function(newItem){
+          user.wishList.push(newItem);
+          pages.wishList.init();
+          modals.mdl_item_create.hide();
+        },
+        error : function(newItem,error){
+          app.e("Couldn't save that item.  We'll look into it ASAP!");
+          app.l(JSON.stringify(error,null,2),2);
+        }
+      });
+    }
+  }
+};
 
 var pages = {
   login : {
@@ -25,20 +184,31 @@ var pages = {
       $('#btn_signup').hammer().off('tap');
     },
     doLogin : function(){
+      $('#lbl_loginError').removeClass('bad');
+      $('#lbl_loginError').removeClass('good');
+      $('#lbl_loginError').html('working...');
+      $('#lbl_loginError').removeClass('clear');
       //place the Login code here
       Parse.User.logIn($('#frm_Login #txt_username').val(), $('#frm_Login #txt_password').val(), {
         success: function(u) {
-          user.parse = u;
-          localStorage.setItem('user',JSON.stringify(user));
+          $('#lbl_loginError').addClass('good');
+          $('#lbl_loginError').html('success!');
+
           // Do stuff after successful login.
-          app.showScreen($('section#start'),true);
+
           $('input').blur();
+          setTimeout(function(){
+            $('#lbl_loginError').addClass('clear');
+          },5000);
+
+          //do the user sign-in
+          app.signin();
         },
         error: function(u, error) {
+          $('#lbl_loginError').addClass('bad');
           // The login failed. Check error to see why.
           if(error.code == 101){
             $('#lbl_loginError').html('nope!');
-            $('#lbl_loginError').removeClass('clear');
             setTimeout(function(){
               $('#lbl_loginError').addClass('clear');
             },5000);
@@ -59,6 +229,17 @@ var pages = {
         pages.signup.doSignUp();
         e.preventDefault();
       });
+      $('#frm_signup #txt_username').on('focus',function(){
+        if ($(this).val() == "" || $(this).val() == null){
+          $(this).val(util.generateElfName());
+          $(this).select();
+        }
+      });
+      /*$('#frm_signup #txt_username').hammer().on('tap',function(){
+        if ($(this).val() == "" || $(this).val() == null){
+          $(this).val(util.generateElfName());
+        }
+      });*/
       $('#frm_signup #txt_passwordConfirm').on('keyup',function(){
         if($(this).val() == $('#frm_signup #txt_password').val()){
           $(this).removeClass('bad');
@@ -75,39 +256,38 @@ var pages = {
           $('#frm_signup #btn_submit-signup').prop('disabled',true);
         }
       });
+      $('#frm_signup #btn_cancel').hammer().on('tap',function(){
+        app.showScreen($('section#login'));
+      });
     },
     remE : function(){
       $('form#frm_signup').off('submit');
+      $('#frm_signup #txt_username').off('focus');
+      $('#frm_signup #txt_username').hammer().off('tap');
       $('#frm_signup #txt_passwordConfirm').off('keyup');
+      $('section#signup #btn_cancel').hammer().off('tap');
     },
     doSignUp : function(){
       user.parse = new Parse.User();
-      user.parse.set("username", $('#txt_username').val());
-      user.parse.set("password", $('#txt_password').val());
-      user.parse.set("email", $('#txt_email').val());
+      user.parse.set("username", $('#frm_signup #txt_username').val());
+      user.parse.set("password", $('#frm_signup #txt_password').val());
+      user.parse.set("email", $('#frm_signup #txt_email').val());
 
       // other fields can be set just like with Parse.Object
-      user.parse.set("firstName", $('#txt_firstName').val());
-      user.parse.set("lastName", $('#txt_lastName').val());
-      user.parse.set("displayName", $('#txt_firstName').val()+" "+$('#txt_lastName').val().substr(0,1)+".");
+      user.parse.set("firstName", $('#frm_signup #txt_firstName').val());
+      user.parse.set("lastName", $('#frm_signup #txt_lastName').val());
+      user.parse.set("displayName", $('#frm_signup #txt_firstName').val()+" "+$('#frm_signup #txt_lastName').val().substr(0,1)+".");
 
       user.parse.signUp(null, {
         success: function(user) {
           // Hooray! Let them use the app now.
-          pages.start.getData(function(){
-            //success
-            pages.start.init();
-          },function(){
-            //fail
-            //display an error
-            console.error("Could not load Start screen");
-          });
+          app.signin();
         },
         error: function(user, error) {
           // Show the error message somewhere and let the user try again.
           $('#lbl_signupError').html(error.message);
           $('#lbl_signupError').removeClass('clear');
-          app.l(error,2);
+          app.l(JSON.stringify(error,null,2),2);
           setTimeout(function(){
             $('#lbl_signupError').addClass('clear');
           },5000);
@@ -137,8 +317,8 @@ var pages = {
     },
     render: function(callback){
       //update the navbar title for the start page & wish list page
-      var title = user.parse.get('username')+"'s "+$('section#start').data('title');
-      $('nav#top .right').html(title);
+      //var title = user.parse.get('username')+"'s "+$('section#start').data('title');
+      //$('nav#top .right').html(title);
 
       if(user.santaList.length > 0){
         $('.screen#start #santaList').html("");
@@ -183,19 +363,112 @@ var pages = {
     }
   },
   wishList : {
-    init : function(){},
-    addE : function(){},
-    remE : function(){}
+    init : function(){
+      pages.wishList.getData();
+    },
+    addE : function(){
+      $('nav#top #btn_addItem').hammer().on('tap',function(){
+        modals.mdl_item_create.show();
+      });
+    },
+    remE : function(){
+      $('nav#top #btn_addItem').hammer().off('tap');
+    },
+    render : function(callback){
+      $('#wishList.screen #wishList').html('');
+      $.each(user.wishList,function(i,v){
+        //DEBUG
+        //console.log(v);
+        var t = _.template($('#tpl_wishList_listItem').html());
+        var d = {
+          objectId : v.get('objectId'),
+          name : v.get('name'),
+          description : v.get('description'),
+          photoURL : v.get('photo').url()
+        };
+        $('#wishList.screen #wishList').append(t(d));
+        //DEBUG
+        //console.log(d);
+        pages.wishList.remE();
+        app.remE();
+        app.addE();
+        pages.wishList.addE();
+      });
+      if(callback){
+        callback();
+      }
+    },
+    getData : function(successCallback,errorCallback){
+
+      //show the loading indicator on the wishList
+      $('#wishList.screen #wishList').html('');
+      var loaderTpl = _.template( $('#tpl_loading').html() );
+      $('#wishList.screen #wishList').append(loaderTpl(null));
+
+      var Item = Parse.Object.extend('Item');
+      var wishListQuery = new Parse.Query(Item);
+
+      wishListQuery.descending('rating');
+      wishListQuery.equalTo('owner',Parse.User.current());
+
+      //include the _User object
+      wishListQuery.include('owner');
+
+      wishListQuery.find({
+        success : function(results){
+          //DEBUG
+          console.log(results);
+          user.wishList = results;
+          if(successCallback){
+            successCallback();
+          }
+        },
+        error : function(error){
+          app.e("Darn it! I couldn't find your Wish List.  Gimmea sec, and try again.");
+          app.l(JSON.stringify(error,null,2),2);
+          if(errorCallback){
+            errorCallback();
+          }
+        }
+      }).then(function(){
+        pages.wishList.render();
+      });
+    }
   },
   events : {
     init : function(){},
     addE : function(){},
     remE : function(){}
   },
-  items : {
+  eventCreate : {
     init : function(){},
     addE : function(){},
-    remE : function(){}
+    remE : function(){},
+    render : function(){},
+    setData : function(){}
+  },
+  eventDetail : {
+    init : function(){},
+    addE : function(){},
+    remE : function(){},
+    render : function(){},
+    getData : function(){}
+  },
+  itemCreate : {
+    init : function(){},
+    addE : function(){
+
+    },
+    remE : function(){},
+    render : function(){},
+    setData : function(){}
+  },
+  itemDetail : {
+    init : function(){},
+    addE : function(){},
+    remE : function(){},
+    render : function(){},
+    getData : function(){}
   },
   personWishList : {
     init : function(){},
@@ -227,28 +500,57 @@ var pages = {
     init : function(){
       pages.settings.remE();
       pages.settings.addE();
-      pages.settings.render();
+      pages.settings.getData();
     },
     addE : function(){
-      $('section#settings #btn_logout').hammer().on('tap',function(){
+      $('section#settings #btn_logout').hammer().on('tap',function(e){
         app.exit();
-      });
-      $('section#settings #btn_cancel').hammer().on('tap',function(){
-        app.showScreen($('section#login'));
+        e.preventDefault();
       });
     },
     remE : function(){
       $('section#settings #btn_logout').hammer().off('tap');
-      $('section#settings #btn_cancel').hammer().off('tap');
     },
     render : function(){
-      //nothing to render yet
+      //set the title to the user's Display Name
+      $('nav#top .right').html( user.parse.get('firstName')+"'s Settings" );
+      var av = null;
+      if(user.parse.get('avatar')){
+        av = user.parse.get('avatar').url();
+      }
+      var upData = {
+        objectId : user.parse.get('objectId'),
+        avatar : av,
+        firstName : user.parse.get('firstName'),
+        lastName : user.parse.get('lastName'),
+        elfName : user.parse.get('username')
+      };
+      var template = _.template( $('#tpl_userProfile').html() );
+      $('section#settings #userProfile').html('');
+      $('section#settings #userProfile').append(template(upData));
     },
     getData : function(successCallback,failCallack){
-      //get remote settings?
+      //get remote info
+      Parse.User.current().fetch({
+        success: function(user) {
+          pages.settings.render();
+          if(successCallback){
+            successCallback();
+          }
+        },
+        error: function(user,error) {
+          app.e("Ah nuts!\nWe couldn't get your profile data!\nWe're on it though, try again later. :)");
+          app.l( JSON.stringify(error,null,2) ,2);
+          if(failCallack){
+            failCallack();
+          }
+        }
+      });
     }
   }
 };
+
+
 
 var app = {
   meta:{
@@ -271,13 +573,42 @@ var app = {
     if (localStorage.logs){
       app.d.l = JSON.parse(localStorage.logs);
     }
+
+    //init shake detection
+    shake = new Shake({
+      threshold : 15
+    });
+    shake.start();
+    $(window).on('shake',function(){
+      var newElfName = util.generateElfName();
+      navigator.notification.confirm(
+        "(tee hee)",//message
+        function(buttonIndex){
+          //buttonIndex is 1-based
+          //alert was dismissed
+          switch(buttonIndex){
+            case 1:
+              console.log(newElfName);
+              break;
+            case 2:
+              cordova.plugins.clipboard.copy(newElfName);
+              break;
+            default:
+          }
+        },//callback
+        newElfName,//[title]
+        ["lol, ok cloze","copy"]//[buttonNames]
+      );
+    });
+
+
     app.bindEvents();
 
     user.parse = Parse.User.current();
     //check if the user's token exists, and is still valid through Parse
     if(user.parse){
       //load the user data
-      app.showScreen($('section.screen#start'),true);
+      app.signin();
     } else {
       //load the login screen
       app.showScreen($('section.screen#login'),true);
@@ -285,9 +616,17 @@ var app = {
   },
   exit: function(){
     Parse.User.logOut();
-    user.parse = Parse.User.current();
+    user.parse = Parse.User.current(); //should now be NULL
     localStorage.setItem('user',JSON.stringify(user));
     location.reload(true);
+  },
+  signin: function(){
+    user.parse = Parse.User.current();
+    //persist to localStorage
+    localStorage.setItem('user',JSON.stringify(user));
+
+    //load the start screen on signin
+    app.showScreen($('section#start'),true);
   },
   showScreen: function(s,animateBoolean,callBack){
     if(animateBoolean){
@@ -365,6 +704,9 @@ var app = {
       case 'settings':
         pages.settings.init();
         break;
+      case 'wishList':
+        pages.wishList.init();
+        break;
       default:
         console.log(s.attr('id'));
     }
@@ -424,6 +766,17 @@ var app = {
     app.d.l.push(log);
     localStorage.logs = JSON.stringify(app.d.l);
   },
+  e: function(message){
+    if(typeof message == "undefined"){
+      message = "Something went wrong - but we've got the best Elves on the job.";
+    }
+    navigator.notification.alert(
+      message,//message
+      function(){},//callback
+      'What a lump \'o coal',//[title]
+      "Nuts."//[buttonNames]
+    );
+  },
   // Bind any events that are required on startup. Common events are:
   // 'load', 'deviceready', 'offline', and 'online'.
   bindEvents: function() {
@@ -474,8 +827,191 @@ var app = {
 
 var user = {
   parse : null,
-  name : "Richard",
   santaList : [],
   eventList : [],
   wishList : []
 };
+
+//various utility functions
+var util = {
+  random : function(min,max){
+    return Math.floor(Math.random() * (max - min)) + min;
+  },
+  elf : {
+    firstNameSyllables : [
+      "mon",
+      "fay",
+      "shi",
+      "zag",
+      "blarg",
+      "resh",
+      "izen",
+      "chi",
+      "under",
+      "little",
+      "hill",
+      "donk",
+      "larp",
+      "jazz",
+      "ears",
+      "hat",
+      "tarp",
+      "zion",
+      "ity",
+      "mirf",
+      "mop",
+      "tree",
+      "pine",
+      "magic",
+      "mana",
+      "tree",
+      "sugar",
+      "candy",
+      "sock",
+      "gift",
+      "buddy",
+      "derp",
+      "woo",
+      "ear",
+      "pointy",
+      "kris",
+      "grumpy",
+      "happy",
+      "silly",
+      "dopy",
+      "wiley",
+      "funny",
+      "fuzzy"
+    ],
+    lastNameSyllables : [
+      "malo",
+      "zak",
+      "aboo",
+      "wonk",
+      "derp",
+      "wood",
+      "brush",
+      "thrup",
+      "green",
+      "brown",
+      "seed",
+      "nut",
+      "son",
+      "kilt",
+      "shoe",
+      "ion",
+      "hole",
+      "butch",
+      "esis",
+      "ou",
+      "ash",
+      "wind",
+      "weak",
+      "magi",
+      "large",
+      "pro",
+      "bush",
+      "shrub",
+      "hill",
+      "top",
+      "bottom",
+      "thistle",
+      "leaf",
+      "mountain",
+      "cliff",
+      "isle",
+      "islay",
+      "pond",
+      "candy",
+      "cane",
+      "pit",
+      "hole",
+      "story",
+      "book",
+      "tool",
+      "cheer",
+      "funny",
+      "furry",
+      "fuzzy",
+      "silly"
+    ]
+  },
+  generateElfName : function(){
+    //first name
+    var fn = "";
+    var numSyllablesFN = util.random(2,4);
+    for (var i = 0; i < numSyllablesFN; i++) {
+      fn += util.elf.firstNameSyllables[util.random(0,util.elf.firstNameSyllables.length)];
+    }
+    var fnFirstLetter = fn.substr(0,1).toUpperCase();
+    fn = fn.slice(1);
+    fn = fnFirstLetter + fn;
+
+    //last name
+    var ln = "";
+    var numSyllablesLN = util.random(1,4);
+    for (var i = 0; i < numSyllablesLN; i++) {
+      ln += util.elf.lastNameSyllables[util.random(0,util.elf.lastNameSyllables.length)];
+    }
+    var lnFirstLetter = ln.substr(0,1).toUpperCase();
+    ln = ln.slice(1);
+    ln = lnFirstLetter + ln;
+
+    return fn + " " + ln
+  },
+  shake : null,
+  getDataUPCold : function(upc){
+
+    var oauth = OAuth({
+      consumer: {
+        public: app.d.s3.key,
+        secret: app.d.s3.secret
+      },
+      signature_method: 'PLAINTEXT'
+    });
+
+    var request_data = {
+      url: app.d.s3.productTestURI,
+      method: 'GET',
+      data: {
+        "upc": upc,
+        "fields": [
+        "name"
+        ]
+      }
+    };
+
+    var token = {
+      public: app.d.s3.key,
+      secret: app.d.s3.secret
+    };
+
+    $.ajax({
+      url: request_data.url,
+      type: request_data.method,
+      data: oauth.authorize(request_data)
+    }).done(function(data) {
+      //process your data here
+      //DEBUG
+      console.log("S3:\n"+data);
+    });
+
+  },
+  getDataUPC : function(upc){
+    var urlData = JSON.stringify({"upc": upc,"fields": ["name"]});
+    $.ajax({
+      url: 'https://sivamani-varun-semantics3-products-data.p.mashape.com/products?q='+urlData,
+      type: 'GET', // The HTTP Method, can be GET POST PUT DELETE etc
+      data: {}, // Additional parameters here
+      datatype: 'json',
+      success: function(data) { console.dir((data.source)); },
+      error: function(err) {
+        app.e('Couldn\'t get product data.  Boooo');
+        console.log(err);
+      },
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-Mashape-Authorization", "fv9bIlLFE7mshtSgaOiMOT6ZS4MLp1g4n1LjsnTzQmZAEZHwWx"); // Enter here your Mashape key
+      }
+    });
+  }
+}

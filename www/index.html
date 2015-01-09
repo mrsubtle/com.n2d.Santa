@@ -15,22 +15,13 @@
         <title>Shh Santa!</title>
     </head>
     <body>
-        <section class="actionSheetContainer hidden">
-          <article id="appManager" class="actionSheet">
-            <ul class="upper">
-              <li>Log out</li>
-            </ul>
-            <ul class="lower">
-              <li class="cancel">Cancel</li>
-            </ul>
-          </article>
-        </section>
         <div class="app">
           <nav id="top" class="navBar hidden">
             <div class="left">
-              <i id="disclosure" class="hidden clear touchable"><img src="img/ico/ico_nav_menu-512.svg"></i>
-              <i id="back" class="hidden clear touchable"><img src="img/ico/ico_nav_back-512.svg"></i>
-              <i id="add" class="hidden clear touchable"><img src="img/ico/ico_nav_add-512.svg"></i>
+              <i id="btn_disclosure" class="hidden clear touchable"><img src="img/ico/ico_nav_menu-512.svg"></i>
+              <i id="btn_back" class="hidden clear touchable"><img src="img/ico/ico_nav_back-512.svg"></i>
+              <i id="btn_addItem" class="hidden clear touchable"><img src="img/ico/ico_nav_add-512.svg"></i>
+              <i id="btn_addEvent" class="hidden clear touchable"><img src="img/ico/ico_nav_add-512.svg"></i>
             </div>
             <div class="right">Shh Santa!</div>
           </nav>
@@ -54,19 +45,14 @@
                     <input id="txt_password" type="password" placeholder="Password" class="" required>
                   </fieldset>
                   <button type="submit" class="touchable action">Sign in</button>
-                  <div id="lbl_loginError" class="redColor centeredText clear">
-                    error placeholder
-                  </div>
+                  <div id="lbl_loginError" class="centeredText clear">&nbsp</div>
                 </form>
               </div>
               <div class="flex-item-bottom">
-                <div class="centeredText">
-                  &nbsp;
-                </div>
-                <div class="centeredText">
+                <!--<div class="centeredText">
                   ho there, new user
-                </div>
-                <button id="btn_signup" data-screen="signup" class="touchable">Create an account</button>
+                </div>-->
+                <button id="btn_signup" data-screen="signup" class="touchable">New? Create an account</button>
               </div>
             </div>
           </section>
@@ -79,58 +65,61 @@
                 <div class="centeredText">
                   oh hai! what's your Human name?
                 </div>
-                <input id="txt_firstName" type="text" placeholder="First name" class="topBorder">
-                <input id="txt_lastName" type="text" placeholder="Last name" class="">
+                <input id="txt_firstName" type="text" placeholder="First name" class="topBorder" spellcheck="false" required>
+                <input id="txt_lastName" type="text" placeholder="Last name" class="" spellcheck="false" required>
                 <div class="centeredText">
                   what's your Elf name?
                 </div>
-                <input id="txt_username" type="text" placeholder="Elf name" class="topBorder">
+                <input id="txt_username" type="text" placeholder="Elf name" class="topBorder" contenteditable="true" spellcheck="false" required>
                 <div class="centeredText">
                   &nbsp;
                 </div>
                 <div class="centeredText">
                   what's your email?
                 </div>
-                <input id="txt_email" type="email" placeholder="email@server.net" class="topBorder">
+                <input id="txt_email" type="email" placeholder="email@server.net" class="topBorder" spellcheck="false" required>
                 <div class="centeredText">
                   &nbsp;
                 </div>
                 <div class="centeredText">
                   enter and confirm a password
                 </div>
-                <input id="txt_password" type="password" placeholder="Password" class="topBorder">
-                <input id="txt_passwordConfirm" type="password" placeholder="Confirm password" class="">
+                <input id="txt_password" type="password" placeholder="Password" class="topBorder" required>
+                <input id="txt_passwordConfirm" type="password" placeholder="Confirm password" class="" required>
                 <button id="btn_submit-signup" type="submit" class="touchable action" disabled="disabled">Create your account</button>
                 <div id="lbl_signupError" class="redColor centeredText clear">
                   &nbsp;
                 </div>
               </fieldset>
-              <button id="btn_cancel" class="touchable cancel">Cancel</button>
+              <button id="btn_cancel" for="frm_signup" type="reset" class="touchable cancel">Cancel</button>
             </form>
           </section>
-          <section id="start" class="screen hidden" data-title="Santa List" data-nav="true" data-nav-icon="disclosure" data-tabbar="true">
+          <section id="start" class="screen hidden" data-title="Santa List" data-nav="true" data-nav-icon="btn_disclosure" data-tabbar="true">
             <ul id="santaList">
               <!-- //SANTA LIST POPULATED HERE// -->
             </ul>
             <button class="touchable">Join an Event</button>
             <button class="action touchable">Create an Event</button>
           </section>
-          <section id="personWishList" class="screen hidden" data-title="Wish List" data-nav="true" data-nav-icon="back" data-tabbar="true">
+          <section id="personWishList" class="screen hidden" data-title="Wish List" data-nav="true" data-nav-icon="btn_back" data-tabbar="true">
             something
           </section>
-          <section id="wishList" class="screen hidden" data-title="Your Wish List" data-nav="true" data-nav-icon="add" data-tabbar="true">
-            <p>My WishList</p>
-            <button class="touchable">Back</button>
+          <section id="wishList" class="screen hidden" data-title="Your Wish List" data-nav="true" data-nav-icon="btn_addItem" data-tabbar="true">
+            <ul id="wishList">
+              <!-- //EVENT LIST POPULATED HERE// -->
+            </ul>
           </section>
-          <section id="events" class="screen hidden" data-title="Event List" data-nav="true" data-nav-icon="add" data-tabbar="true">
-            <p>Events</p>
-            <button class="touchable">Back</button>
+          <section id="events" class="screen hidden" data-title="Event List" data-nav="true" data-nav-icon="btn_addEvent" data-tabbar="true">
+            <ul id="eventList">
+              <!-- //EVENT LIST POPULATED HERE// -->
+            </ul>
           </section>
-          <section id="items" class="screen hidden">
-            <p>Wish List</p>
-            <button class="touchable">Back</button>
+          <section id="item" class="screen hidden">
           </section>
-          <section id="settings" class="screen hidden" data-title="Settings" data-nav="true" data-tabbar="true">
+          <section id="settings" class="screen hidden" data-title="Loading Settings..." data-nav="true" data-tabbar="true">
+            <div id="userProfile">
+              <div class="loader">Loading...</div>
+            </div>
             <div class="centeredText">
               &nbsp;
             </div>
@@ -170,25 +159,101 @@
            </div>
           </nav>
         </div>
+
+        <group class="actionSheetContainer actionSheetOff">
+          <article id="appManager" class="actionSheet">
+            <ul class="upper">
+              <li>Log out</li>
+            </ul>
+            <ul class="lower">
+              <li class="cancel">Cancel</li>
+            </ul>
+          </article>
+        </group>
+
+        <group class="modalContainer modalOff">
+          <modal id="mdl_item_create" class="modalView hidden">
+            <toolbar class="modalNav">
+              <left>
+                <i id="btn_cancel" class="touchable">
+                  <img src="img/ico/ico_modal_cancel-512.svg" width="512" height="512">
+                </i>
+              </left>
+              <right>
+                <i id="btn_save" class="touchable">
+                  <img src="img/ico/ico_modal_save-512.svg" width="512" height="512">
+                </i>
+              </right>
+            </toolbar>
+            <content>
+              <title>Add to wish list...</title>
+              <form id="frm_item_create">
+                <fieldset>
+                  <div id="lbl_barcodeStatus" class="centeredText">
+                    ...by scanning a barcode...
+                  </div>
+                  <button id="btn_scanBarcode" class="touchable">Tap to Scan</button>
+                  <input type="text" id="txt_upc" placeholder="##########" pattern="[0-9]*" class="">
+                </fieldset>
+                <fieldset>
+                  <div class="centeredTextDouble">
+                    tell me about it
+                  </div>
+                  <input type="text" id="txt_name" placeholder="What is it?" class="topBorder" required>
+                  <input type="text" id="txt_description" placeholder="Some details about it?" class="">
+                </fieldset>
+                <fieldset>
+                  <div class="centeredTextDouble">
+                    how bad to you want it?
+                  </div>
+                  <input type="range" id="txt_rating" min="1" max="10000" class="topBorder">
+                  <div class="centeredText op50">
+                    yatinybit <img src="img/ico/ico_inline_doubleArrow-2048x250.svg" alt="" style="width: 100px; height: auto; vertical-align: middle;" align="bottom"> omgsobad
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <div class="centeredTextDouble">
+                    where to find it?
+                  </div>
+                  <input type="text" id="txt_lastSeenAt" placeholder="Last seen at..." class="topBorder">
+                  <input type="text" id="txt_estPrice" placeholder="...for about" pattern="[0-9]*" class="">
+                </fieldset>
+                <fieldset>
+                  <div class="centeredText">
+                    &nbsp;
+                  </div>
+                  <buttonGroup>
+                    <button id="btn_takeItemPhoto" class="touchable">Take a photo</button>
+                    <button id="btn_selectItemPhoto" class="touchable">Select from gallery</button>
+                  </buttonGroup>
+                  <div id="item_create_photoContainer" class=""></div>
+                  <button id="btn_deleteItemPhoto" class="cancel hidden touchable">Remove Photo</button>
+                </fieldset>
+                <div id="" class="centeredTextDouble">
+                  P.S.: tap the checkmark up top if you're done!
+                </div>
+                <div class="centeredText">
+                  &nbsp;
+                </div>
+              </form>
+            </content>
+          </modal>
+        </group>
+
         <!-- Cordova JS -->
         <script type="text/javascript" src="cordova.js"></script>
         <!-- Additional libraries -->
         <script src="js/lib/underscore-min.js"></script>
         <script src="js/lib/backbone-min.js"></script>
         <script src="js/lib/jquery-2.1.1.min.js"></script>
+        <script src="js/lib/oauth-1.0a.js"></script>
         <script src="js/lib/hammer.min.js"></script>
         <script src="js/lib/jquery.hammer.js"></script>
         <!-- http://barcode-coder.com/en/barcode-jquery-plugin-201.html -->
         <script src="js/lib/jquery-barcode.min.js"></script>
-        <script src="js/lib/parse-1.3.2.min.js"></script>
+        <script src="js/lib/parse-1.3.3.min.js"></script>
         <script src="js/lib/moment.min.js"></script>
-        <!-- Add & Configure GSS
-        <script>
-          GSS_CONFIG = {
-            worker: "js/lib/gss/dist/worker.js"
-          }
-        </script>
-        <script src="js/lib/gss/dist/gss.js"></script> -->
+        <script src="js/lib/shake.js"></script>
         <!-- Custom JS -->
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
@@ -199,6 +264,27 @@
         </script>
 
         <!-- underscore.js DOM templates -->
+        <script type="text/template" id="tpl_loading">
+          <div class="loader">Loading...</div>
+        </script>
+        <script type="text/template" id="tpl_events_listItem">
+          <li>
+            <i id="eventIcon" class="event"><%= date.getDate() %></i>
+            <label id="eventTitle" class="title"><%= title %></label>
+            <label id="eventDescription" class="description"><%= description %></label>
+            <label id="eventSpendLimit" class="spendLimit"><%= spendLimit %></label>
+          </li>
+        </script>
+        <script type="text/template" id="tpl_wishList_listItem">
+          <li id="<%= objectId %>" class="touchable">
+            <i class="itemPhoto" style="background-image:url('<%= photoURL %>')"></i>
+            <label class="name"><%= name %></label>
+            <label class="description"><%= description %></label>
+          </li>
+        </script>
+        <script type="text/template" id="tpl_item_create_photo">
+          <img src="<%= uri %>" width="1024" height="1024" align="absmiddle">
+        </script>
         <script type="text/template" id="tpl_start_listItem">
           <li
             id="<%= objectId %>"
@@ -218,6 +304,20 @@
               stuff
             </div>
           </li>
+        </script>
+        <script type="text/template" id="tpl_userProfile">
+          <div id="<%= objectId %>" class="nameGroup">
+            <% if(avatar != null){ %>
+              <i class="avatar" style="background-image:url('<%= avatar %>');"></i>
+            <% } else { %>
+              <i class="avatarTxt"><%= firstName.substr(0,1) %><%= lastName.substr(0,1) %></i>
+            <% } %>
+            <label class="firstName"><%= firstName %> <%= lastName %></label>
+            <div class="centeredText">
+              aka
+            </div>
+            <label class="elfName"><%= elfName %></label>
+          </div>
         </script>
     </body>
 </html>
