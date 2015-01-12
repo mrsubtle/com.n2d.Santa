@@ -195,6 +195,7 @@
 /Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/jquery-barcode.min.js \
 /Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/jquery.hammer.js \
 /Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/moment.min.js \
+/Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/oauth-1.0a.js \
 /Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/oridomi.min.js \
 /Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/parse-1.3.2.min.js \
 /Users/richbennett/Documents/_dev/phonegap/com.n2d.Santa/platforms/android/assets/www/js/lib/parse-1.3.3.min.js \

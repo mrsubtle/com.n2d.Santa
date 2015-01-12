@@ -23,6 +23,9 @@ var modals = {
       modals.mdl_item_create.remE();
       modals.mdl_item_create.addE();
       modals.mdl_item_create.render();
+      $(modals.mdl_item_create.el + ' content').scrollTop(0);
+      $(modals.mdl_item_create.el + ' #item_create_photoContainer').html('');
+      $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').addClass("hidden");
     },
     addE : function() {
       $(modals.mdl_item_create.el + ' #frm_item_create').on('submit',function(e){
@@ -36,6 +39,39 @@ var modals = {
         modals.mdl_item_create.setData();
         e.preventDefault();
       });
+      $(modals.mdl_item_create.el + ' #txt_upc').on('blur',function(e){
+        var upc = $(modals.mdl_item_create.el + ' #txt_upc').val();
+        if(upc != "" || upc != null){
+          try {
+            util.getDataUPC(upc,function(d){
+              $(modals.mdl_item_create.el + ' #lbl_barcodeStatus').html('...item found!');
+              //if an image is available, pre-load the image
+              if( d.images.length >= 1 ){
+                util.convertImgToBase64(d.images[0],function(base64string){
+                  var v = {
+                    uri : base64string
+                  };
+                  var tpl = _.template( $('#tpl_item_create_photo').html() );
+                  $(modals.mdl_item_create.el + ' #item_create_photoContainer').html(tpl(v));
+                  $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').removeClass("hidden");
+                });
+              }
+              //populate the item name
+              $(modals.mdl_item_create.el + ' #txt_name').val(d.name);
+            },function(e){
+              var obj = $(modals.mdl_item_create.el + ' #lbl_barcodeStatus');
+              var objMsg = obj.html();
+              obj.html('...item info not found. :(');
+              setTimeout(function(){
+                obj.html(objMsg);
+              },3000);
+            });
+          } catch (e) {
+            //DEBUG
+            console.log(e);
+          }
+        }
+      });
       $(modals.mdl_item_create.el + ' #btn_scanBarcode').hammer().on('tap',function(e){
         var lblO = $(modals.mdl_item_create.el + ' #frm_item_create #lbl_barcodeStatus');
         var tmpLbl = lblO.html();
@@ -44,13 +80,38 @@ var modals = {
         cordova.plugins.barcodeScanner.scan(
           function (result) {
             if(result.cancelled == 0){
-              tmpLbl.html('...successful scan...');
-              $('#frm_item_create #txt_upc').html(result.text);
+              lblO.html('...successful scan...');
+              $('#frm_item_create #txt_upc').val(result.text);
+              var upc = result.text;
+              if(upc != "" || upc != null){
+                util.getDataUPC(upc,function(d){
+                  //if an image is available, pre-load the image
+                  if( d.images.length >= 1 ){
+                    util.convertImgToBase64(d.images[0],function(base64string){
+                      var v = {
+                        uri : base64string
+                      };
+                      var tpl = _.template( $('#tpl_item_create_photo').html() );
+                      $(modals.mdl_item_create.el + ' #item_create_photoContainer').html(tpl(v));
+                      $(modals.mdl_item_create.el + ' #btn_deleteItemPhoto').removeClass("hidden");
+                    });
+                  }
+                  //populate the item name
+                  $(modals.mdl_item_create.el + ' #txt_name').val(d.name);
+
+                },function(e){
+                  //DEBUG
+                  console.log(e);
+                });
+              }
+            } else {
+              lblO.html(tmpLbl);
             }
             //DEBUG
             console.log(result);
           },
           function (error) {
+            lblO.html(tmpLbl);
             app.e("Oops! Scan seems to have failed, but don't worry - we'll fix it. Eventiually.");
             //DEBUG
             console.log(error);
@@ -115,6 +176,7 @@ var modals = {
       $(modals.mdl_item_create.el + ' #frm_item_create').off('submit');
       $(modals.mdl_item_create.el + ' #btn_cancel').hammer().off('tap');
       $(modals.mdl_item_create.el + ' #btn_save').hammer().off('tap');
+      $(modals.mdl_item_create.el + ' #txt_upc').off('blur');
       $(modals.mdl_item_create.el + ' #btn_scanBarcode').hammer().off('tap');
       $(modals.mdl_item_create.el + ' #btn_takeItemPhoto').hammer().off('tap');
       $(modals.mdl_item_create.el + ' #btn_selectItemPhoto').hammer().off('tap');
@@ -360,10 +422,7 @@ var pages = {
   },
   wishList : {
     init : function(){
-      pages.wishList.getData(pages.wishList.render(function(){
-        pages.wishList.remE();
-        pages.wishList.addE();
-      }));
+      pages.wishList.getData();
     },
     addE : function(){
       $('nav#top #btn_addItem').hammer().on('tap',function(){
@@ -374,28 +433,50 @@ var pages = {
       $('nav#top #btn_addItem').hammer().off('tap');
     },
     render : function(callback){
+      $('#wishList.screen #wishList').html('');
       $.each(user.wishList,function(i,v){
+        //DEBUG
+        //console.log(v);
         var t = _.template($('#tpl_wishList_listItem').html());
         var d = {
-          name : v.attributes.name,
-          photoURL : v.attributes.photo._url
-        }
+          objectId : v.get('objectId'),
+          name : v.get('name'),
+          description : v.get('description'),
+          photoURL : v.get('photo').url()
+        };
+        $('#wishList.screen #wishList').append(t(d));
+        //DEBUG
+        //console.log(d);
+        pages.wishList.remE();
+        app.remE();
+        app.addE();
+        pages.wishList.addE();
       });
       if(callback){
         callback();
       }
     },
     getData : function(successCallback,errorCallback){
+
+      //show the loading indicator on the wishList
+      $('#wishList.screen #wishList').html('');
+      var loaderTpl = _.template( $('#tpl_loading').html() );
+      $('#wishList.screen #wishList').append(loaderTpl(null));
+
       var Item = Parse.Object.extend('Item');
       var wishListQuery = new Parse.Query(Item);
 
+      wishListQuery.descending('rating');
       wishListQuery.equalTo('owner',Parse.User.current());
+
+      //include the _User object
+      wishListQuery.include('owner');
+
       wishListQuery.find({
         success : function(results){
           //DEBUG
           console.log(results);
-
-          user.wishList = _.sortBy(results, function(o) { return -o.attributes.rating; });
+          user.wishList = results;
           if(successCallback){
             successCallback();
           }
@@ -403,7 +484,12 @@ var pages = {
         error : function(error){
           app.e("Darn it! I couldn't find your Wish List.  Gimmea sec, and try again.");
           app.l(JSON.stringify(error,null,2),2);
+          if(errorCallback){
+            errorCallback();
+          }
         }
+      }).then(function(){
+        pages.wishList.render();
       });
     }
   },
@@ -522,6 +608,8 @@ var pages = {
   }
 };
 
+
+
 var app = {
   meta:{
     "currentPersonObjectID" : ""
@@ -532,6 +620,9 @@ var app = {
       secret : 'YjQ1NTMzNDRmMTNmMzQyNzgyMjhlOWQ1ODVjMThlZGM',
       productURI : 'https://api.semantics3.com/v1/products?q=',
       productTestURI : 'https://api.semantics3.com/test/v1/products?q='
+    },
+    outpan : {
+      key : 'e4df75113dd952806a676e683515c618'
     },
     //session log
     s:[],
@@ -929,5 +1020,103 @@ var util = {
 
     return fn + " " + ln
   },
-  shake : null
+  shake : null,
+  getDataUPCold : function(upc){
+
+    var oauth = OAuth({
+      consumer: {
+        public: app.d.s3.key,
+        secret: app.d.s3.secret
+      },
+      signature_method: 'PLAINTEXT'
+    });
+
+    var request_data = {
+      url: app.d.s3.productTestURI,
+      method: 'GET',
+      data: {
+        "upc": upc,
+        "fields": [
+        "name"
+        ]
+      }
+    };
+
+    var token = {
+      public: app.d.s3.key,
+      secret: app.d.s3.secret
+    };
+
+    $.ajax({
+      url: request_data.url,
+      type: request_data.method,
+      data: oauth.authorize(request_data)
+    }).done(function(data) {
+      //process your data here
+      //DEBUG
+      console.log("S3:\n"+data);
+    });
+
+  },
+  getDataUPC : function(upc, successCallback, errorCallback){
+    // NEW lookup via Outpan
+    var url = 'http://www.outpan.com/api/get-product.php?barcode='+upc+'&apikey='+app.d.outpan.key;
+    //var response = {};
+    $.getJSON(url,null).done(function(d){
+      //DEBUG
+      //console.log(d);
+      if(d.error){
+        if(errorCallback){
+          errorCallback(d);
+        }
+      } else {
+        if(successCallback){
+          successCallback(d);
+        }
+      }
+    }).fail(function(e){
+      if(errorCallback){
+        errorCallback(e);
+      }
+    }).always(function(){
+      console.log('product lookup done');
+
+    });
+  },
+  convertImgToBase64 : function(url, callback, outputFormat){
+    /*
+      Supported input formats
+      =====
+      image/png
+      image/jpeg
+      image/jpg
+      image/gif
+      image/bmp
+      image/tiff
+      image/x-icon
+      image/svg+xml
+      image/webp
+      image/xxx
+
+      Supported output formats
+      =====
+      image/png
+      image/jpeg
+      image/webp (chrome)
+    */
+    var canvas = document.createElement('CANVAS'),
+    ctx = canvas.getContext('2d'),
+    img = new Image;
+    img.crossOrigin = 'Anonymous';
+    img.onload = function(){
+      var dataURL;
+      canvas.height = img.height;
+      canvas.width = img.width;
+      ctx.drawImage(img, 0, 0);
+      dataURL = canvas.toDataURL(outputFormat);
+      callback.call(this, dataURL);
+      canvas = null;
+    };
+    img.src = url;
+  }
 }

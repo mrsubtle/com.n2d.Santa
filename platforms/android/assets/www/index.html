@@ -200,7 +200,7 @@
                     tell me about it
                   </div>
                   <input type="text" id="txt_name" placeholder="What is it?" class="topBorder" required>
-                  <input type="text" id="txt_description" placeholder="Some details about it?" class="">
+                  <input type="text" id="txt_description" placeholder="Have any more info?" class="">
                 </fieldset>
                 <fieldset>
                   <div class="centeredTextDouble">
@@ -246,6 +246,7 @@
         <script src="js/lib/underscore-min.js"></script>
         <script src="js/lib/backbone-min.js"></script>
         <script src="js/lib/jquery-2.1.1.min.js"></script>
+        <script src="js/lib/oauth-1.0a.js"></script>
         <script src="js/lib/hammer.min.js"></script>
         <script src="js/lib/jquery.hammer.js"></script>
         <!-- http://barcode-coder.com/en/barcode-jquery-plugin-201.html -->
@@ -275,11 +276,10 @@
           </li>
         </script>
         <script type="text/template" id="tpl_wishList_listItem">
-          <li id="<%= objectId %>">
-            <i id="eventIcon" class="event"><%= date.getDate() %></i>
-            <label id="eventTitle" class="title"><%= title %></label>
-            <label id="eventDescription" class="description"><%= description %></label>
-            <label id="eventSpendLimit" class="spendLimit"><%= spendLimit %></label>
+          <li id="<%= objectId %>" class="touchable">
+            <i class="itemPhoto" style="background-image:url('<%= photoURL %>')"></i>
+            <label class="name"><%= name %></label>
+            <label class="description"><%= description %></label>
           </li>
         </script>
         <script type="text/template" id="tpl_item_create_photo">

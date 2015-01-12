@@ -496,7 +496,7 @@
 
 
 // SCREENS =======================
-  .screen#login {
+  #login.screen {
     #startScreenLogo {
       position: relative;
       text-align: center;
@@ -513,7 +513,7 @@
     }
   }
 
-  .screen#start {
+  #start.screen {
     // profile-style layout
     ul {
       //reset the ul
@@ -668,7 +668,7 @@
     // end profile-style layout
   }
 
-  .screen#settings {
+  #settings.screen {
     .nameGroup {
       text-align: center;
       padding: 2em 0em;
@@ -726,6 +726,52 @@
     }
   }
 
+  #wishList.screen {
+    ul {
+      //reset the ul
+      margin: 0; padding: 0;
+      list-style: none;
+      li {
+        position: relative;
+        display: block;
+        min-height: @touchBase;
+        font-family: @fontFamilyHeader;
+        font-size: 1.25em;
+        border-bottom: @borderStandard darken(@appBG1,10%);
+        overflow: hidden;
+        height: @touchBase * 1.9;
+        padding: 1.5em 1em 1.5em @touchBase * 1.9;
+        background-color: @appBG;
+        i.itemPhoto {
+          display: inline-block;
+          width: @touchBase * 1.5;
+          height: @touchBase * 1.5;
+          position: absolute;
+          top: @touchBase / 5;
+          left: @touchBase / 5;
+          background-size: cover;
+          background-position: center center;
+          border-radius: @touchBase / 5;
+        }
+        label {
+          display: block;
+        }
+        label.name {
+          font-family: @fontFamilyHeader;
+          letter-spacing: 0.02em;
+          font-size: 1.1em;
+          color: @tintColor;
+        }
+        label.description {
+          font-family: @fontFamilyHeaderL;
+          letter-spacing: 0.01em;
+          font-size: 0.9em;
+          color: @mainColorLight;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
 
 // MODALS ========================
   .modalOff {
